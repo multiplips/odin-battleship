@@ -1,1 +1,2 @@
-# webpack-template-basic
+# Battleship
+

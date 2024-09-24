@@ -1,0 +1,21 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+* {
+  /*border: 1px solid red;*/
+  font-family: sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+input,
+button,
+select {
+  font: inherit;
+}
+
+:root {
+}

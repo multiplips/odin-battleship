@@ -28,30 +28,30 @@ describe('ship damage and sinking tests', () => {
     testShip = new Ship('destroyer');
   });
 
-  test('ship should start with zero hits', () => {
+  test('ship starts with zero hits', () => {
     expect(testShip.hits).toBe(0);
   });
 
-  test('ship should start afloat', () => {
+  test('ship starts afloat', () => {
     expect(testShip.sunk).toBe(false);
   });
 
-  test('hit() should increase hits', () => {
+  test('hit() increases hits count', () => {
     testShip.hit();
     expect(testShip.hits).toBe(1);
   });
 
-  test('ship should remain afloat if hits < len', () => {
+  test('ship remains afloat if hits < len', () => {
     testShip.hit().hit();
     expect(testShip.sunk).toBe(false);
   });
 
-  test('when hits equals length, ship should sink', () => {
+  test('when hits equals length, ship sinks', () => {
     testShip.hit().hit().hit();
     expect(testShip.sunk).toBe(true);
   });
 
-  test('hits should cap at ship length', () => {
+  test('hit count caps at ship length', () => {
     testShip.hit().hit().hit().hit();
     expect(testShip.hits).toBe(3);
   });

@@ -1,15 +1,6 @@
 import Ship from '../classes/ship.js';
 
-// BOILERPLATE
-// beforeEach(() => {
-//   let newShip = new Ship();
-// });
-// describe('', () => {});
-// test('', () => {
-//   expect().toBe();
-// });
-
-describe('new ship lengths', () => {
+describe('new ship tests', () => {
   test.each([
     { ship: 'carrier', len: 5 },
     { ship: 'battleship', len: 4 },

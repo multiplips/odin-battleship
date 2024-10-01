@@ -1,7 +1,11 @@
-const path = require('path');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
+import path from 'path';
+import { fileURLToPath } from 'url';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
 
-module.exports = {
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const common = {
   entry: { index: './src/index.js' },
   output: {
     filename: '[name].bundle.js',
@@ -35,3 +39,5 @@ module.exports = {
     // runtimeChunk: 'single',
   },
 };
+
+export default common;

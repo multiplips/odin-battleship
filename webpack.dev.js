@@ -1,10 +1,12 @@
-const { merge } = require('webpack-merge');
-const common = require('./webpack.common.js');
+import { merge } from 'webpack-merge';
+import common from './webpack.common.js';
 
-module.exports = merge(common, {
+const config = merge(common, {
   mode: 'development',
   devtool: 'eval-source-map',
   devServer: {
     watchFiles: ['./src/template.html'],
   },
 });
+
+export default config;

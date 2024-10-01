@@ -1,3 +1,8 @@
+@import url(https://fonts.bunny.net/css?family=asap:400,600|bebas-neue:400|bevan:400);
+/*font-family: 'Asap', sans-serif;*/
+/*font-family: 'Bebas Neue', display;*/
+/*font-family: 'Bevan', display;*/
+
 *,
 *::before,
 *::after {
@@ -18,4 +23,193 @@ select {
 }
 
 :root {
+  /* palette */
+  --amaranth: rgb(217 4 41);
+  --beige: rgb(214 204 194);
+  --baby-blue: rgb(224 251 252);
+  --dark-blue: rgb(29 53 87);
+  --dark-grey: rgb(74 75 105);
+  --dark-grey-opq: rgb(75 75 105 / 60%);
+  --grey-blue: rgb(76 86 109);
+  --ivory: rgb(255 255 240);
+  --mint-opq: rgb(114 239 221 / 40%);
+  --offwhite: rgb(241 250 238);
+  --warm-grey: rgb(154 140 152);
+  --sky-opq: rgb(0 180 216 / 40%);
+
+  /* elements */
+  --color-bg1: var(--baby-blue);
+  --color-p1-sea: var(--sky-opq);
+  --color-p1-ships: var(--warm-grey);
+  --color-p2-sea: var(--dark-grey-opq);
+  --color-p2-ships: var(--dark-grey);
+  --color-miss: var(--ivory);
+  --color-hit: var(--amaranth);
+  --color-peg-outline: var(--beige);
+  --color-main-headings: var(--dark-blue);
+  --color-minor-headings: var(--dark-grey);
+  --color-fleetbox-elements: var(--offwhite);
+  --color-shadows: var(--dark-grey-opq);
+
+  --peg-diameter: 35%;
+}
+
+body {
+  background: var(--color-bg1);
+  display: flex;
+  flex-flow: column;
+  font-size: 16px;
+  height: 100vh;
+  padding: 50px;
+  margin: auto;
+  max-width: 1280px;
+  width: 100vw;
+}
+
+header {
+  text-align: center;
+}
+
+/* text shadows */
+/*#game-title,*/
+/*#title-subtext,*/
+/*e {*/
+/*  text-shadow: 0 0 6px var(--color-ltgrey1);*/
+/*}*/
+
+/* box shadows */
+/*[class^='square'] {*/
+/*  box-shadow: 0 0 6px var(--color-ltgrey1);*/
+/*}*/
+
+header > h1 {
+  color: var(--color-main-headings);
+  font-family: 'Bevan', display;
+  font-size: 2.6rem;
+  margin-bottom: -13px;
+}
+
+header > p {
+  color: var(--color-minor-headings);
+  font-family: 'Asap', sans-serif;
+  font-size: 1.4rem;
+  font-weight: 600;
+}
+
+section > h2 {
+  border-radius: 6px;
+  color: var(--offwhite);
+  font-family: 'Bebas Neue', display;
+  font-size: 2rem;
+  margin: 0 auto;
+  padding-top: 5px;
+  text-align: center;
+  width: 100%;
+}
+
+section.p1 > h2 {
+  background: var(--color-p1-ships);
+}
+
+section.p2 > h2 {
+  background: var(--color-p2-ships);
+}
+
+main {
+  display: flex;
+  gap: 100px;
+  height: 100%;
+  padding: 50px;
+}
+
+section {
+  display: flex;
+  flex-flow: column nowrap;
+  gap: 5px;
+  width: 50%;
+}
+
+.board {
+  aspect-ratio: 1 / 1;
+  position: relative;
+  width: 100%;
+}
+
+[class*='-layer'] {
+  aspect-ratio: 1 / 1;
+  display: grid;
+  grid-template: repeat(10, 1fr) / repeat(10, 1fr);
+  gap: 3px;
+  position: absolute;
+  left: 0;
+  width: 100%;
+}
+
+/* base-layer "sea" squares */
+[class*='-layer'] > div {
+  align-items: center;
+  border-radius: 8px;
+  font-size: 4rem;
+  max-height: 100%;
+}
+
+.p1 .base-layer > div {
+  background: var(--color-p1-sea);
+}
+
+.p2 .base-layer > div {
+  background: var(--color-p2-sea);
+}
+
+.p1 .ship {
+  background: var(--color-p1-ships);
+}
+
+.p2 .ship {
+  background: var(--color-p2-ships);
+}
+
+/* fleet view */
+.fleetbox {
+  /*border: 1px solid red; /* debugging only */
+  border-radius: 6px;
+  display: flex;
+  justify-content: center;
+  height: 150px;
+  margin: 0 auto;
+  padding: 8px;
+  width: 100%;
+}
+
+.p1 .fleetbox {
+  background: var(--color-p1-ships);
+}
+.p2 .fleetbox {
+  background: var(--color-p2-ships);
+}
+
+.fleetbox > h2 {
+  color: var(--color-fleetbox-elements);
+  font-family: 'Bebas Neue', display;
+  font-size: 1.7rem;
+  font-weight: 600;
+}
+
+/* pegs */
+.peg-layer > .miss,
+.peg-layer > .hit {
+  aspect-ratio: 1 / 1;
+  border-radius: 100%;
+  box-shadow: 0.1rem 0.05rem 0.2rem 0.1rem var(--color-shadows);
+  margin: auto;
+  outline: 2px outset var(--color-peg-outline);
+  width: var(--peg-diameter);
+}
+
+.peg-layer > .miss {
+  background: var(--color-miss);
+}
+
+.peg-layer > .hit {
+  background: var(--color-hit);
 }

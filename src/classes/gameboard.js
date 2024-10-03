@@ -1,25 +1,15 @@
 import Ship from './ship.js';
 
 export default class Gameboard {
-  #board = {};
   #misses = new Set([]);
   #hits = new Set([]);
   #sunk = new Set([]);
   #allSunk = false;
-
-  carrier;
-  battleship;
-  destroyer;
-  submarine;
-  patrol;
+  #placedShips = [];
 
   constructor() {
     this.#makeBoard();
     this.#makeFleet();
-  }
-
-  get board() {
-    return this.#board;
   }
 
   get misses() {
@@ -38,35 +28,51 @@ export default class Gameboard {
     return this.#allSunk;
   }
 
-  receiveAttack(coordinates) {
-    if (this.#board[coordinates].ship) {
-      this.#board[coordinates].ship.hit();
-      this.#hits.add(coordinates);
-      this.#updateSunkState();
-      return true;
-    } else {
-      this.#misses.add(coordinates);
-      return false;
+  /** Verifies attacked square, then returns attack result (hit/miss). */
+  receiveAttack(square) {
+    // Attacked square must be a valid square on the board.
+    if (!Object.keys(this).includes(square)) {
+      return 'invalid';
     }
+
+    // Attacked square must not have been previously attacked.
+    if (this.#hits.has(square) || this.#misses.has(square)) {
+      return 'duplicate';
+    }
+
+    if (this[square].ship) {
+      this[square].ship.hit();
+      this.#hits.add(square);
+
+      // If ship was sunk, add to set of sunk ships.
+      if (this[square].ship.sunk) this.#sunk.add(this[square].ship);
+
+      this.#updateAllSunk();
+      return 'hit';
+    }
+
+    this.#misses.add(square);
+    return 'miss';
   }
 
-  placeShip(position) {
-    let { ship } = position;
-    let squares = this.#calcShipSquares(position);
+  placeShip({ ship, origin, heading }) {
+    // NOTE: View sends ship as a string. Need to reassign here so
+    // that we can access ship object fields, e.g., length.
+    ship = this[ship];
 
+    let shipSquares = this.#calcShipSquares({ ship, origin, heading });
     console.assert(
-      squares.length === ship.length,
-      'placeShip(): squares length should match ship length',
+      shipSquares.length === ship.length,
+      'placeShip(): length of coordinate array should match ship length',
     );
 
-    if (squares) {
-      for (let square of squares) {
-        this.#board[square].ship = ship;
-      }
-      return true;
+    if (shipSquares.length > 0) {
+      shipSquares.forEach((square) => (this[square].ship = ship));
+      this.#placedShips.push(ship);
+      return shipSquares;
+    } else {
+      return false;
     }
-
-    return false;
   }
 
   /**
@@ -77,7 +83,8 @@ export default class Gameboard {
   #calcShipSquares({ ship, origin, heading }) {
     let shipLength = ship.length;
     let squares = [];
-    let [x, y] = [origin[0], +origin.slice(1)];
+    let [x, y] = [origin[0], origin.slice(1)];
+    console.assert(typeof x === 'string' && typeof y === 'string');
 
     let bowSquares = Math.floor((shipLength - 1) / 2);
     let aftSquares = shipLength % 2 ? bowSquares : bowSquares + 1;
@@ -96,51 +103,68 @@ export default class Gameboard {
 
     for (let i = -start; i <= end; i++) {
       let square;
+
       if (['n', 's'].includes(heading)) {
-        let newY = y + i;
-        if (newY < 1 || newY > 10) return false; // INFO: rejects out-of-bounds y
-        square = x + newY;
+        let newY = +y + i;
+        if (newY < 1 || newY > 10) return false; // rejects out-of-bounds y
+        square = x + String(newY).padStart(2, '0');
       } else {
         let newX = +x.charCodeAt() - 96 + i;
-        if (newX < 1 || newX > 10) return false; // INFO: rejects out-of-bounds x
+        if (newX < 1 || newX > 10) return false; // rejects out-of-bounds x
         square = String.fromCharCode(newX + 96) + y;
       }
-      // INFO: rejects occupied squares
-      if (this.#board[square].ship !== null) return false;
+
+      // rejects occupied squares
+      if (this[square].ship !== null) return false;
       squares.push(square);
     }
 
     return squares;
   }
 
-  #updateSunkState() {
-    let fleet = [
-      this.carrier,
-      this.battleship,
-      this.destroyer,
-      this.submarine,
-      this.patrol,
-    ];
-
-    if (fleet.every((ship) => ship.sunk === true)) {
+  #updateAllSunk() {
+    if (this.#placedShips.every((ship) => ship.sunk === true)) {
       this.#allSunk = true;
     }
   }
 
   #makeBoard() {
+    let allSquares = {};
     let xAxis = 'abcdefghij'.split('');
-    let yAxis = '0123456789'.split('').map((x) => +x + 1 + '');
+    let yAxis = '0123456789'
+      .split('')
+      .map((y) => String(+y + 1).padStart(2, '0'));
 
-    for (let y of yAxis) {
-      for (let x of xAxis) {
-        this.#board[x + y] = { ship: null };
-      }
-    }
+    xAxis.forEach((x) =>
+      yAxis.forEach((y) => {
+        allSquares[x + y] = {
+          value: { ship: null },
+          enumerable: true,
+        };
+      }),
+    );
+
+    Object.defineProperties(this, allSquares);
   }
 
   #makeFleet() {
-    ['carrier', 'battleship', 'destroyer', 'submarine', 'patrol'].forEach(
-      (ship) => (this[ship] = new Ship(ship)),
+    let allShips = {};
+    let shipTypes = [
+      'carrier',
+      'battleship',
+      'destroyer',
+      'submarine',
+      'patrol',
+    ];
+
+    shipTypes.forEach(
+      (type) =>
+        (allShips[type] = {
+          value: new Ship(type),
+          enumerable: false,
+        }),
     );
+
+    Object.defineProperties(this, allShips);
   }
 }

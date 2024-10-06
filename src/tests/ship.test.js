@@ -11,6 +11,11 @@ describe('new ship tests', () => {
     let newShip = new Ship(ship);
     expect(newShip.length).toBe(len);
   });
+
+  let invalidShip = () => new Ship('runcible');
+  test('invalid ship type throws', () => {
+    expect(invalidShip).toThrow('Invalid ship');
+  });
 });
 
 describe('ship damage and sinking tests', () => {

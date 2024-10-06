@@ -1,4 +1,4 @@
-export default class Boat {
+export default class Ship {
   #shipLengths = {
     carrier: 5,
     battleship: 4,
@@ -8,10 +8,21 @@ export default class Boat {
   };
   #sunk = false;
   #hits = 0;
-  #length = 0;
 
   constructor(shipType) {
-    this.#length = this.#shipLengths[shipType];
+    if (!Object.keys(this.#shipLengths).includes(shipType)) {
+      throw new Error('Invalid ship type.');
+    }
+
+    Object.defineProperty(this, 'type', {
+      value: shipType,
+      enumerable: true,
+    });
+
+    Object.defineProperty(this, 'length', {
+      value: this.#shipLengths[shipType],
+      enumerable: true,
+    });
   }
 
   get sunk() {
@@ -22,19 +33,11 @@ export default class Boat {
     return this.#hits;
   }
 
-  get length() {
-    return this.#length;
-  }
-
   hit() {
-    if (this.#hits < this.#length) {
+    if (this.#hits < this.length) {
       ++this.#hits;
-      this.#isSunk();
+      this.#sunk = this.#hits === this.length ? true : false;
     }
     return this;
-  }
-
-  #isSunk() {
-    this.#sunk = this.#hits >= this.#length ? true : false;
   }
 }

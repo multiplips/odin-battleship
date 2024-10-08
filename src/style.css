@@ -50,6 +50,7 @@ select {
   --color-minor-headings: var(--dark-grey);
   --color-fleetbox-elements: var(--offwhite);
   --color-shadows: var(--dark-grey-opq);
+  --color-target-square: var(--amaranth);
 
   --peg-diameter: 35%;
 }
@@ -145,10 +146,10 @@ section {
   width: 100%;
 }
 
-/* base-layer "sea" squares */
+/* base and targeting-layer square styling */
 [class*='-layer'] > div {
   align-items: center;
-  border-radius: 8px;
+  border-radius: 6px;
   font-size: 4rem;
   max-height: 100%;
 }
@@ -167,6 +168,10 @@ section {
 
 .p2 .ship {
   background: var(--color-p2-ships);
+}
+
+.targeting-layer > div:hover {
+  border: 3px solid var(--color-target-square);
 }
 
 /* fleet view */
